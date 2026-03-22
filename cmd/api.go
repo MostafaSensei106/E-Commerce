@@ -1,0 +1,63 @@
+package cmd
+
+import (
+	"log/slog"
+	"net/http"
+	"time"
+
+	"github.com/MostafaSensei106/E-Commerce/internal/products"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+)
+
+type application struct {
+	config config
+}
+
+type config struct {
+	port         string
+	db           databaseConfig
+	writeTimeout time.Duration
+	readTimeout  time.Duration
+	idleTimeout  time.Duration
+}
+
+type databaseConfig struct {
+	dsn string
+}
+
+func (a *application) mount() http.Handler {
+	r := chi.NewRouter()
+
+	// Middlewares
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	r.Use(middleware.Timeout(60 * time.Second))
+
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("All Good!"))
+	})
+
+	productHandler := products.NewHandler(products.NewService())
+	r.Get("/products", productHandler.GetAll)
+
+	return r
+}
+
+// run
+func (a *application) run(h http.Handler) error {
+	srv := &http.Server{
+		Addr:         a.config.port,
+		Handler:      h,
+		WriteTimeout: a.config.writeTimeout,
+		ReadTimeout:  a.config.readTimeout,
+		IdleTimeout:  a.config.idleTimeout,
+	}
+
+	slog.Info("Server started", "addr", a.config.port)
+
+	return srv.ListenAndServe()
+}
