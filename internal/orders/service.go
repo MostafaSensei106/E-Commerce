@@ -55,6 +55,13 @@ func (s *svc) PlaceNewOrder(ctx context.Context, p repo.CreateOrderParams) (repo
 		if err != nil {
 			return repo.Order{}, err
 		}
+		err = s.repo.IncreaseProductQuantity(ctx, repo.IncreaseProductQuantityParams{
+			Quantity: -item.Quantity,
+			ID:       item.ProductID,
+		})
+		if err != nil {
+			return repo.Order{}, err
+		}
 	}
 	return order, nil
 }
