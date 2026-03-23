@@ -19,7 +19,7 @@ func Execute() {
 	cfg := config{
 		port: ":8080",
 		db: databaseConfig{
-			dsn: env.GetString("Sensei-E-Commerce-DB-DSN", "host=localhost user=root password=root dbname=ecommerce sslmode=disable"),
+			dsn: env.GetString("E-Commerce-DB-DSN", "host=localhost user=root password=root dbname=ecommerce sslmode=disable"),
 		},
 	}
 
