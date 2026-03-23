@@ -30,6 +30,7 @@ type databaseConfig struct {
 	dsn string
 }
 
+// Mount
 func (a *application) mount() http.Handler {
 	r := chi.NewRouter()
 
@@ -60,7 +61,7 @@ func (a *application) mount() http.Handler {
 	return r
 }
 
-// run
+// Run
 func (a *application) run(h http.Handler) error {
 	srv := &http.Server{
 		Addr:         a.config.port,
