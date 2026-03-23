@@ -20,14 +20,15 @@ VALUES ($1, $2, $3)
 RETURNING *;
 
 
--- name: UpdateProduct :exec
+-- name: UpdateProductWhereID :one
 UPDATE products
 SET 
     name = $1,
     price_in_cents = $2,
     quantity = $3,
     updated_at = now()
-WHERE id = $4;
+WHERE id = $4
+RETURNING *;
 
 
 -- name: DeleteProduct :exec
@@ -81,7 +82,7 @@ LIMIT $1;
 
 
 -- name: CreateOrderItem :one
-INSERT INTO order_items (
+INSERT INTO orders_items (
     order_id,
     product_id,
     quantity,
@@ -93,18 +94,18 @@ RETURNING *;
 
 -- name: GetOrderItemsByOrderID :many
 SELECT *
-FROM order_items
+FROM orders_items
 WHERE order_id = $1;
 
 
 -- name: GetOrderItem :one
 SELECT *
-FROM order_items
+FROM orders_items
 WHERE order_id = $1 AND product_id = $2;
 
 
 -- name: UpdateOrderItem :exec
-UPDATE order_items
+UPDATE orders_items
 SET quantity = $1,
     price_in_cents = $2,
     updated_at = now()
@@ -112,7 +113,7 @@ WHERE order_id = $3 AND product_id = $4;
 
 
 -- name: DeleteOrderItem :exec
-DELETE FROM order_items
+DELETE FROM orders_items
 WHERE order_id = $1 AND product_id = $2;
 
 
@@ -129,7 +130,7 @@ SELECT
     oi.price_in_cents
 
 FROM orders o
-JOIN order_items oi ON oi.order_id = o.id
+JOIN orders_items oi ON oi.order_id = o.id
 JOIN products p ON p.id = oi.product_id
 WHERE o.id = $1;
 
@@ -137,7 +138,7 @@ WHERE o.id = $1;
 -- name: GetOrderTotal :one
 SELECT 
     COALESCE(SUM(oi.quantity * oi.price_in_cents), 0) AS total
-FROM order_items oi
+FROM orders_items oi
 WHERE oi.order_id = $1;
 
 

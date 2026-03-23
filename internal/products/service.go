@@ -10,6 +10,9 @@ import (
 type Service interface {
 	GetAllProducts(ctx context.Context) ([]repo.Product, error)
 	GetProductByID(ctx context.Context, id int64) (repo.Product, error)
+	CreateNewProduct(ctx context.Context, product repo.CreateProductParams) (repo.Product, error)
+	UpdateProduct(ctx context.Context, product repo.UpdateProductWhereIDParams) (repo.Product, error)
+	DeleteProduct(ctx context.Context, id int64) error
 }
 
 type svc struct {
@@ -39,4 +42,31 @@ func (s *svc) GetProductByID(ctx context.Context, id int64) (repo.Product, error
 		return repo.Product{}, err
 	}
 	return product, nil
+}
+
+func (s *svc) CreateNewProduct(ctx context.Context, p repo.CreateProductParams) (repo.Product, error) {
+	product, err := s.repo.CreateProduct(ctx, p)
+	if err != nil {
+		log.Println(err.Error())
+		return repo.Product{}, err
+	}
+	return product, nil
+}
+
+func (s *svc) UpdateProduct(ctx context.Context, p repo.UpdateProductWhereIDParams) (repo.Product, error) {
+	product, err := s.repo.UpdateProductWhereID(ctx, p)
+	if err != nil {
+		log.Println(err.Error())
+		return product, err
+	}
+	return product, nil
+}
+
+func (s *svc) DeleteProduct(ctx context.Context, id int64) error {
+	err := s.repo.DeleteProduct(ctx, id)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	return nil
 }
