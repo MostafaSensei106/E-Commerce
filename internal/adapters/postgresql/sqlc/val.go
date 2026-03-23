@@ -19,9 +19,9 @@ func (p *CreateOrderParams) Validate() error {
 	if p.Status == "" {
 		return fmt.Errorf("Status is required")
 	}
-	if len(p.Items) == 0 {
-		return fmt.Errorf("at least one item is required")
-	}
+	// if len(p.Items) == 0 {
+	// 	return fmt.Errorf("at least one item is required")
+	// }
 
 	return nil
 }

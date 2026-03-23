@@ -124,6 +124,12 @@ func (h *handler) DeleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	err = h.service.DeleteProduct(r.Context(), id)
 	if err != nil {
 		log.Println(err.Error())
+
+		if err == ErrProductNotFound {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

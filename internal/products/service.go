@@ -2,9 +2,14 @@ package products
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	repo "github.com/MostafaSensei106/E-Commerce/internal/adapters/postgresql/sqlc"
+)
+
+var (
+	ErrProductNotFound = errors.New("product not found")
 )
 
 type Service interface {
@@ -63,10 +68,22 @@ func (s *svc) UpdateProduct(ctx context.Context, p repo.UpdateProductWhereIDPara
 }
 
 func (s *svc) DeleteProduct(ctx context.Context, id int64) error {
-	err := s.repo.DeleteProduct(ctx, id)
+	exists, err := s.repo.ProductExists(ctx, id)
 	if err != nil {
 		log.Println(err.Error())
 		return err
+	}
+
+	if exists == false {
+		return ErrProductNotFound
+	}
+
+	if exists == true {
+		err := s.repo.DeleteProduct(ctx, id)
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
 	}
 	return nil
 }

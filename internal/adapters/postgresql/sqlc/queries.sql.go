@@ -20,9 +20,8 @@ RETURNING id, customer_id, status, created_at
 `
 
 type CreateOrderParams struct {
-	CustomerID int64                   `json:"customer_id"`
-	Status     string                  `json:"status"`
-	Items      []CreateOrderItemParams `json:"items"`
+	CustomerID int64  `json:"customer_id"`
+	Status     string `json:"status"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
@@ -112,6 +111,37 @@ func (q *Queries) DeleteProduct(ctx context.Context, id int64) error {
 	return err
 }
 
+const getAllOrders = `-- name: GetAllOrders :many
+SELECT id, customer_id, status, created_at
+FROM orders
+ORDER BY created_at DESC
+`
+
+func (q *Queries) GetAllOrders(ctx context.Context) ([]Order, error) {
+	rows, err := q.db.Query(ctx, getAllOrders)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Order
+	for rows.Next() {
+		var i Order
+		if err := rows.Scan(
+			&i.ID,
+			&i.CustomerID,
+			&i.Status,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getAllProducts = `-- name: GetAllProducts :many
 SELECT id, name, price_in_cents, quantity, created_at, updated_at
 FROM products
@@ -177,6 +207,24 @@ func (q *Queries) GetAvailableProducts(ctx context.Context) ([]Product, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getOrderByID = `-- name: GetOrderByID :one
+SELECT id, customer_id, status, created_at
+FROM orders
+WHERE id = $1
+`
+
+func (q *Queries) GetOrderByID(ctx context.Context, id int64) (Order, error) {
+	row := q.db.QueryRow(ctx, getOrderByID, id)
+	var i Order
+	err := row.Scan(
+		&i.ID,
+		&i.CustomerID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const getProductByID = `-- name: GetProductByID :one

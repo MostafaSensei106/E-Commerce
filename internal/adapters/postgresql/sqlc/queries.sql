@@ -95,3 +95,15 @@ INSERT INTO orders_items (
      product_id, quantity , price_in_cents
 ) VALUES ($1, $2, $3, $4)
 RETURNING *;
+
+
+-- name: GetOrderByID :one
+SELECT *
+FROM orders
+WHERE id = $1;
+
+
+-- name: GetAllOrders :many
+SELECT *
+FROM orders
+ORDER BY created_at DESC;

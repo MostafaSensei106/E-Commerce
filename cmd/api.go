@@ -58,6 +58,7 @@ func (a *application) mount() http.Handler {
 	ordersHandler := orders.NewHandler(ordersService)
 
 	r.Post("/orders", ordersHandler.PlaceNewOrderHandler)
+	r.Get("/orders", ordersHandler.GetAllOrders)
 
 	return r
 }
