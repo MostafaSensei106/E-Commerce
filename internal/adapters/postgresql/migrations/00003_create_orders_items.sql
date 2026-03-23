@@ -1,6 +1,5 @@
 -- +goose Up
--- +goose Up
-CREATE TABLE IF NOT EXISTS order_items (
+CREATE TABLE IF NOT EXISTS orders_items (
     id BIGSERIAL PRIMARY KEY,
 
     order_id BIGINT NOT NULL,
@@ -18,4 +17,4 @@ CREATE TABLE IF NOT EXISTS order_items (
     UNIQUE (order_id, product_id) 
 );
 -- +goose Down
-DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders_items;
