@@ -81,68 +81,15 @@ ORDER BY quantity DESC
 LIMIT $1;
 
 
--- name: CreateOrderItem :one
-INSERT INTO orders_items (
-    order_id,
-    product_id,
-    quantity,
-    price_in_cents
-)
-VALUES ($1, $2, $3, $4)
+-- name: CreateOrder :one
+INSERT INTO orders (
+    customer_id,
+    status,
+) VALUES ($1, $2)
 RETURNING *;
 
-
--- name: GetOrderItemsByOrderID :many
-SELECT *
-FROM orders_items
-WHERE order_id = $1;
-
-
--- name: GetOrderItem :one
-SELECT *
-FROM orders_items
-WHERE order_id = $1 AND product_id = $2;
-
-
--- name: UpdateOrderItem :exec
-UPDATE orders_items
-SET quantity = $1,
-    price_in_cents = $2,
-    updated_at = now()
-WHERE order_id = $3 AND product_id = $4;
-
-
--- name: DeleteOrderItem :exec
-DELETE FROM orders_items
-WHERE order_id = $1 AND product_id = $2;
-
-
-
--- name: GetOrderWithItems :many
-SELECT 
-    o.id AS order_id,
-    o.status,
-
-    p.id AS product_id,
-    p.name,
-
-    oi.quantity,
-    oi.price_in_cents
-
-FROM orders o
-JOIN orders_items oi ON oi.order_id = o.id
-JOIN products p ON p.id = oi.product_id
-WHERE o.id = $1;
-
-
--- name: GetOrderTotal :one
-SELECT 
-    COALESCE(SUM(oi.quantity * oi.price_in_cents), 0) AS total
-FROM orders_items oi
-WHERE oi.order_id = $1;
-
-
--- name: DecreaseProductQuantity :exec
-UPDATE products
-SET quantity = quantity - $1
-WHERE id = $2 AND quantity >= $1;
+-- name: CreateOrderItem :one
+INSERT INTO orders_items (
+     product_id, quantity
+) VALUES ($1, $2)
+RETURNING *;

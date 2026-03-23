@@ -2,13 +2,12 @@ package orders
 
 import (
 	"context"
-	"log"
 
 	repo "github.com/MostafaSensei106/E-Commerce/internal/adapters/postgresql/sqlc"
 )
 
 type Service interface {
-	GetOrderWithItems(ctx context.Context, id int64) ([]repo.GetOrderWithItemsRow, error)
+	PlaceNewOrder(ctx context.Context, params repo.CreateOrderParams) (repo.Order, error)
 }
 
 type svc struct {
@@ -21,11 +20,6 @@ func NewService(repo repo.Querier) Service {
 	}
 }
 
-func (s *svc) GetOrderWithItems(ctx context.Context, id int64) ([]repo.GetOrderWithItemsRow, error) {
-	orderItems, err := s.repo.GetOrderWithItems(ctx, id)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-	return orderItems, nil
+func (s *svc) PlaceNewOrder(ctx context.Context, p repo.CreateOrderParams) (repo.Order, error) {
+
 }

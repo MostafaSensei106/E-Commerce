@@ -10,8 +10,8 @@ import (
 type Service interface {
 	GetAllProducts(ctx context.Context) ([]repo.Product, error)
 	GetProductByID(ctx context.Context, id int64) (repo.Product, error)
-	CreateNewProduct(ctx context.Context, product repo.CreateProductParams) (repo.Product, error)
-	UpdateProduct(ctx context.Context, product repo.UpdateProductWhereIDParams) (repo.Product, error)
+	CreateNewProduct(ctx context.Context, params repo.CreateProductParams) (repo.Product, error)
+	UpdateProduct(ctx context.Context, params repo.UpdateProductWhereIDParams) (repo.Product, error)
 	DeleteProduct(ctx context.Context, id int64) error
 }
 

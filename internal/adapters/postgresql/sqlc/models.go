@@ -9,10 +9,10 @@ import (
 )
 
 type Order struct {
-	ID        int64              `json:"id"`
-	Status    string             `json:"status"`
-	CreatedAt pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	ID         int64              `json:"id"`
+	CustomerID int64              `json:"customer_id"`
+	Status     string             `json:"status"`
+	CreatedAt  pgtype.Timestamptz `json:"created_at"`
 }
 
 type OrdersItem struct {

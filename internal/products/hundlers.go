@@ -34,6 +34,7 @@ func (h *handler) GetProductByIDHandler(w http.ResponseWriter, r *http.Request) 
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, "invalid product ID", http.StatusBadRequest)
 		return
 	}
@@ -49,8 +50,9 @@ func (h *handler) GetProductByIDHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *handler) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
-	var body repo.Product
+	var body repo.CreateProductParams
 	if err := json.Read(r, &body); err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -61,6 +63,7 @@ func (h *handler) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
 		Quantity:     body.Quantity,
 	})
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -73,11 +76,13 @@ func (h *handler) UpdateProductHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, "invalid product ID", http.StatusBadRequest)
 		return
 	}
-	var body repo.Product
+	var body repo.UpdateProductWhereIDParams
 	if err := json.Read(r, &body); err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -90,6 +95,7 @@ func (h *handler) UpdateProductHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -102,6 +108,7 @@ func (h *handler) DeleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, "invalid product ID", http.StatusBadRequest)
 		return
 	}

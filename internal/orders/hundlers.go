@@ -1,11 +1,11 @@
 package orders
 
 import (
+	"log"
 	"net/http"
-	"strconv"
 
+	repo "github.com/MostafaSensei106/E-Commerce/internal/adapters/postgresql/sqlc"
 	"github.com/MostafaSensei106/E-Commerce/internal/json"
-	"github.com/go-chi/chi/v5"
 )
 
 type handler struct {
@@ -18,19 +18,24 @@ func NewHandler(service Service) *handler {
 	}
 }
 
-func (h *handler) GetOrderWithItemsHandler(w http.ResponseWriter, r *http.Request) {
-	idStr := chi.URLParam(r, "id")
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		http.Error(w, "invalid order ID", http.StatusBadRequest)
+func (h *handler) PlaceNewOrderHandler(w http.ResponseWriter, r *http.Request) {
+	var body repo.CreateOrderParams
+	if err := json.Read(r, &body); err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	ordersWithItems, err := h.service.GetOrderWithItems(r.Context(), id)
+	order, err := h.service.PlaceNewOrder(r.Context(), repo.CreateOrderParams{
+		CustomerID: body.CustomerID,
+		Status:     body.Status,
+		Items:      body.Items,
+	})
 	if err != nil {
+		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.Write(w, http.StatusOK, ordersWithItems)
+	json.Write(w, http.StatusCreated, order)
 }

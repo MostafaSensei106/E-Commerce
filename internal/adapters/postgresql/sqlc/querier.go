@@ -11,23 +11,17 @@ import (
 )
 
 type Querier interface {
+	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
 	CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrdersItem, error)
 	CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error)
-	DecreaseProductQuantity(ctx context.Context, arg DecreaseProductQuantityParams) error
-	DeleteOrderItem(ctx context.Context, arg DeleteOrderItemParams) error
 	DeleteProduct(ctx context.Context, id int64) error
 	GetAllProducts(ctx context.Context) ([]Product, error)
 	GetAvailableProducts(ctx context.Context) ([]Product, error)
-	GetOrderItem(ctx context.Context, arg GetOrderItemParams) (OrdersItem, error)
-	GetOrderItemsByOrderID(ctx context.Context, orderID int64) ([]OrdersItem, error)
-	GetOrderTotal(ctx context.Context, orderID int64) (interface{}, error)
-	GetOrderWithItems(ctx context.Context, id int64) ([]GetOrderWithItemsRow, error)
 	GetProductByID(ctx context.Context, id int64) (Product, error)
 	GetTopProductsByQuantity(ctx context.Context, limit int32) ([]Product, error)
 	IncreaseProductQuantity(ctx context.Context, arg IncreaseProductQuantityParams) error
 	ProductExists(ctx context.Context, id int64) (bool, error)
 	SearchProducts(ctx context.Context, dollar_1 pgtype.Text) ([]Product, error)
-	UpdateOrderItem(ctx context.Context, arg UpdateOrderItemParams) error
 	UpdateProductPrice(ctx context.Context, arg UpdateProductPriceParams) error
 	UpdateProductWhereID(ctx context.Context, arg UpdateProductWhereIDParams) (Product, error)
 }
