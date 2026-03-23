@@ -35,7 +35,7 @@ func NewService(repo repo.Querier, db *pgx.Conn) Service {
 func (s *svc) GetAllOrders(ctx context.Context) ([]repo.Order, error) {
 	orders, err := s.repo.GetAllOrders(ctx)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Println(err.Error())
 		return []repo.Order{}, err
 	}
 	return orders, nil
@@ -44,7 +44,7 @@ func (s *svc) GetAllOrders(ctx context.Context) ([]repo.Order, error) {
 func (s *svc) GetOrderByID(ctx context.Context, id int64) (repo.Order, error) {
 	order, err := s.repo.GetOrderByID(ctx, id)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Println(err.Error())
 		return repo.Order{}, err
 	}
 	return order, nil
