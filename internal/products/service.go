@@ -40,12 +40,3 @@ func (s *svc) GetProductByID(ctx context.Context, id int64) (repo.Product, error
 	}
 	return product, nil
 }
-
-func (s *svc) CreateProduct(ctx context.Context, product repo.CreateProductParams) (repo.Product, error) {
-	newProduct, err := s.repo.CreateProduct(ctx, product)
-	if err != nil {
-		log.Println(err.Error())
-		return repo.Product{}, err
-	}
-	return newProduct, nil
-}

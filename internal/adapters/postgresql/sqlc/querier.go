@@ -6,14 +6,30 @@ package repo
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
+	CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrderItem, error)
 	CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error)
+	DecreaseProductQuantity(ctx context.Context, arg DecreaseProductQuantityParams) error
+	DeleteOrderItem(ctx context.Context, arg DeleteOrderItemParams) error
 	DeleteProduct(ctx context.Context, id int64) error
 	GetAllProducts(ctx context.Context) ([]Product, error)
+	GetAvailableProducts(ctx context.Context) ([]Product, error)
+	GetOrderItem(ctx context.Context, arg GetOrderItemParams) (OrderItem, error)
+	GetOrderItemsByOrderID(ctx context.Context, orderID int64) ([]OrderItem, error)
+	GetOrderTotal(ctx context.Context, orderID int64) (interface{}, error)
+	GetOrderWithItems(ctx context.Context, id int64) ([]GetOrderWithItemsRow, error)
 	GetProductByID(ctx context.Context, id int64) (Product, error)
+	GetTopProductsByQuantity(ctx context.Context, limit int32) ([]Product, error)
+	IncreaseProductQuantity(ctx context.Context, arg IncreaseProductQuantityParams) error
+	ProductExists(ctx context.Context, id int64) (bool, error)
+	SearchProducts(ctx context.Context, dollar_1 pgtype.Text) ([]Product, error)
+	UpdateOrderItem(ctx context.Context, arg UpdateOrderItemParams) error
 	UpdateProduct(ctx context.Context, arg UpdateProductParams) error
+	UpdateProductPrice(ctx context.Context, arg UpdateProductPriceParams) error
 }
 
 var _ Querier = (*Queries)(nil)
