@@ -7,5 +7,10 @@ CREATE TABLE IF NOT EXISTS products (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS orders ();
+
+CREATE TABLE IF NOT EXISTS order_items ();
+
 -- +goose Down
 DROP TABLE IF EXISTS products;
