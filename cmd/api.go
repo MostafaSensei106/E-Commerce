@@ -54,7 +54,7 @@ func (a *application) mount() http.Handler {
 	r.Put("/products/{id}", productHandler.UpdateProductHandler)
 	r.Delete("/products/{id}", productHandler.DeleteProductHandler)
 
-	ordersService := orders.NewService(repo.New(a.db))
+	ordersService := orders.NewService(repo.New(a.db), a.db)
 	ordersHandler := orders.NewHandler(ordersService)
 
 	r.Post("/orders", ordersHandler.PlaceNewOrderHandler)

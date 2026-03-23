@@ -84,12 +84,14 @@ LIMIT $1;
 -- name: CreateOrder :one
 INSERT INTO orders (
     customer_id,
-    status,
+    status
 ) VALUES ($1, $2)
 RETURNING *;
 
+
 -- name: CreateOrderItem :one
 INSERT INTO orders_items (
-     product_id, quantity
-) VALUES ($1, $2)
+    order_id,
+     product_id, quantity , price_in_cents
+) VALUES ($1, $2, $3, $4)
 RETURNING *;

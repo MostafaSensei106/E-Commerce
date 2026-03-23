@@ -39,18 +39,26 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 
 const createOrderItem = `-- name: CreateOrderItem :one
 INSERT INTO orders_items (
-     product_id, quantity
-) VALUES ($1, $2)
+    order_id,
+     product_id, quantity , price_in_cents
+) VALUES ($1, $2, $3, $4)
 RETURNING id, order_id, product_id, quantity, price_in_cents, created_at, updated_at
 `
 
 type CreateOrderItemParams struct {
-	ProductID int64 `json:"product_id"`
-	Quantity  int32 `json:"quantity"`
+	OrderID      int64   `json:"order_id"`
+	ProductID    int64   `json:"product_id"`
+	Quantity     int32   `json:"quantity"`
+	PriceInCents float64 `json:"price_in_cents"`
 }
 
 func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrdersItem, error) {
-	row := q.db.QueryRow(ctx, createOrderItem, arg.ProductID, arg.Quantity)
+	row := q.db.QueryRow(ctx, createOrderItem,
+		arg.OrderID,
+		arg.ProductID,
+		arg.Quantity,
+		arg.PriceInCents,
+	)
 	var i OrdersItem
 	err := row.Scan(
 		&i.ID,

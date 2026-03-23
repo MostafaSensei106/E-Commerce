@@ -3,6 +3,7 @@ sql:
 - engine: "postgresql"
   queries: "./internal/adapters/postgresql/sqlc/queries.sql"
   schema: "./internal/adapters/postgresql/migrations"
+  strict_function_checks: true
   gen:
     go:
       package: "repo"

@@ -57,11 +57,13 @@ func (h *handler) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, err := h.service.CreateNewProduct(r.Context(), repo.CreateProductParams{
-		Name:         body.Name,
-		PriceInCents: body.PriceInCents,
-		Quantity:     body.Quantity,
-	})
+	if err := body.Validate(); err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	product, err := h.service.CreateNewProduct(r.Context(), body)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -82,6 +84,12 @@ func (h *handler) UpdateProductHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var body repo.UpdateProductWhereIDParams
 	if err := json.Read(r, &body); err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := body.Validate(); err != nil {
 		log.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

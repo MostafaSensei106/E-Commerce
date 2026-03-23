@@ -26,13 +26,27 @@ func (h *handler) PlaceNewOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	order, err := h.service.PlaceNewOrder(r.Context(), repo.CreateOrderParams{
-		CustomerID: body.CustomerID,
-		Status:     body.Status,
-		Items:      body.Items,
-	})
+	if err := body.Validate(); err != nil {
+		log.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	order, err := h.service.PlaceNewOrder(r.Context(), body)
+
 	if err != nil {
 		log.Println(err.Error())
+
+		if err == ErrProductNotFound {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		if err == ErrProductHasNoStock {
+			http.Error(w, err.Error(), http.StatusNoContent)
+			return
+		}
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
